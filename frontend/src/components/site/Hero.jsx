@@ -6,17 +6,15 @@ import { scrollToId } from "./Reveal";
 
 const lineParent = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
 };
 const lineChild = {
-  hidden: { y: "110%" },
-  show: { y: "0%", transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { y: 28, opacity: 0 },
+  show: { y: 0, opacity: 1, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
 };
 
 const Line = ({ children, className = "" }) => (
-  <span className="line-mask">
-    <motion.span variants={lineChild} className={`block ${className}`}>{children}</motion.span>
-  </span>
+  <motion.span variants={lineChild} className={`block ${className}`}>{children}</motion.span>
 );
 
 export const Hero = () => {
@@ -47,7 +45,7 @@ export const Hero = () => {
 
           <motion.h1
             variants={lineParent} initial="hidden" animate="show"
-            className="text-4xl sm:text-5xl lg:text-[4.2rem] font-extrabold leading-[1.04] tracking-tight text-ysa-navy"
+            className="text-4xl sm:text-5xl lg:text-[4.2rem] font-extrabold leading-[1.12] tracking-tight text-ysa-navy"
           >
             <Line>Building</Line>
             <Line className="text-ysa-blue">Curious Minds.</Line>
@@ -56,7 +54,7 @@ export const Hero = () => {
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
             className="mt-6 text-base md:text-lg text-ysa-navy/70 max-w-xl font-medium"
           >
             Small Batches <span className="text-ysa-yellow font-bold">•</span> Individual Attention{" "}
@@ -65,7 +63,7 @@ export const Hero = () => {
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.05 }}
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.62 }}
             className="mt-8 flex flex-wrap gap-3"
           >
             <button
@@ -102,14 +100,14 @@ export const Hero = () => {
           </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 }}
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}
             className="absolute -bottom-5 -left-2 sm:left-4 bg-white rounded-2xl shadow-lift px-5 py-3.5 flex items-center gap-3"
           >
             <div className="text-3xl font-extrabold text-ysa-blue">15+</div>
             <div className="text-xs font-semibold text-ysa-navy/70 leading-tight">Years Building<br />Young Scientists</div>
           </motion.div>
           <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.25 }}
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
             className="absolute -top-3 -right-1 sm:right-2 bg-ysa-yellow rounded-2xl shadow-lift px-4 py-3 rotate-3"
           >
             <div className="text-xs font-bold text-ysa-navy leading-tight">Concept-Based<br />Learning ✦</div>

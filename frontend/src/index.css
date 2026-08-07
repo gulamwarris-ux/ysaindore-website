@@ -28,7 +28,8 @@ body {
 ::selection { background: var(--ysa-yellow); color: var(--ysa-navy); }
 
 /* Hero kinetic mask */
-.line-mask { overflow: hidden; display: block; }
+.line-mask { overflow: hidden; display: block; padding-bottom: 0.14em; }
+.line-mask > span { padding-bottom: 0.02em; }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
