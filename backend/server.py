@@ -68,6 +68,8 @@ class Enquiry(BaseModel):
     kind: Literal["demo", "contact", "assessment", "admission"] = "contact"
     message: Optional[str] = None
     status: Literal["new", "contacted", "resolved"] = "new"
+    notes: Optional[str] = None
+    callback_date: Optional[str] = None
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
@@ -81,8 +83,10 @@ class EnquiryCreate(BaseModel):
     company: Optional[str] = None  # honeypot — must stay empty
 
 
-class StatusUpdate(BaseModel):
-    status: Literal["new", "contacted", "resolved"]
+class EnquiryUpdate(BaseModel):
+    status: Optional[Literal["new", "contacted", "resolved"]] = None
+    notes: Optional[str] = None
+    callback_date: Optional[str] = None
 
 
 class SessionExchange(BaseModel):
@@ -254,9 +258,12 @@ async def admin_list_enquiries(admin=Depends(get_current_admin)):
 
 
 @api_router.patch("/admin/enquiries/{enquiry_id}", response_model=Enquiry)
-async def admin_update_enquiry(enquiry_id: str, body: StatusUpdate, admin=Depends(get_current_admin)):
+async def admin_update_enquiry(enquiry_id: str, body: EnquiryUpdate, admin=Depends(get_current_admin)):
+    update = body.model_dump(exclude_unset=True)
+    if not update:
+        raise HTTPException(status_code=400, detail="No fields to update")
     res = await db.enquiries.find_one_and_update(
-        {"id": enquiry_id}, {"$set": {"status": body.status}},
+        {"id": enquiry_id}, {"$set": update},
         projection={"_id": 0}, return_document=True)
     if not res:
         raise HTTPException(status_code=404, detail="Enquiry not found")
@@ -276,10 +283,11 @@ async def admin_export_enquiries(admin=Depends(get_current_admin)):
     docs = await db.enquiries.find({}, {"_id": 0}).sort("created_at", -1).to_list(5000)
     buf = io.StringIO()
     writer = csv.writer(buf)
-    writer.writerow(["Name", "Phone", "Email", "Grade", "Type", "Status", "Message", "Received"])
+    writer.writerow(["Name", "Phone", "Email", "Grade", "Type", "Status", "Callback Date", "Notes", "Message", "Received"])
     for d in docs:
         writer.writerow([d.get("name"), d.get("phone"), d.get("email", ""), d.get("grade", ""),
-                         d.get("kind"), d.get("status", "new"), d.get("message", ""), d.get("created_at")])
+                         d.get("kind"), d.get("status", "new"), d.get("callback_date", ""),
+                         d.get("notes", ""), d.get("message", ""), d.get("created_at")])
     buf.seek(0)
     return StreamingResponse(iter([buf.getvalue()]), media_type="text/csv",
                              headers={"Content-Disposition": "attachment; filename=enquiries.csv"})

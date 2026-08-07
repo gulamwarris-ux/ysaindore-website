@@ -1,9 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Loader2, LogOut, Download, Trash2, Search, Inbox, RefreshCw } from "lucide-react";
+import { Loader2, LogOut, Download, Trash2, Search, Inbox, RefreshCw, StickyNote, CalendarClock } from "lucide-react";
 import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import { Label } from "../components/ui/label";
 import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, DialogClose } from "../components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -20,6 +24,55 @@ const KIND_STYLE = {
 const STATUS_STYLE = {
   new: "bg-red-100 text-red-600", contacted: "bg-amber-100 text-amber-700", resolved: "bg-emerald-100 text-emerald-700",
 };
+
+function FollowUpButton({ row, onSave }) {
+  const [open, setOpen] = useState(false);
+  const [notes, setNotes] = useState(row.notes || "");
+  const [date, setDate] = useState(row.callback_date || "");
+  const hasFollowUp = Boolean(row.notes || row.callback_date);
+
+  useEffect(() => { if (open) { setNotes(row.notes || ""); setDate(row.callback_date || ""); } }, [open, row]);
+
+  const save = () => { onSave(row.id, notes.trim() || null, date || null); setOpen(false); };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <button
+          data-testid={`admin-followup-${row.id}`}
+          className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg border transition-colors ${
+            hasFollowUp ? "bg-ysa-blue/10 text-ysa-blue border-ysa-blue/20" : "text-ysa-navy/50 border-ysa-mist hover:border-ysa-blue"
+          }`}
+        >
+          <StickyNote className="h-3.5 w-3.5" />
+          {row.callback_date
+            ? new Date(row.callback_date).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })
+            : hasFollowUp ? "Note" : "Add"}
+        </button>
+      </DialogTrigger>
+      <DialogContent className="rounded-2xl sm:max-w-[440px]">
+        <DialogHeader>
+          <DialogTitle className="text-ysa-navy">Follow-up · {row.name}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 pt-1">
+          <div className="grid gap-2">
+            <Label className="flex items-center gap-1.5"><CalendarClock className="h-4 w-4 text-ysa-blue" /> Callback date</Label>
+            <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="rounded-xl" data-testid={`followup-date-${row.id}`} />
+          </div>
+          <div className="grid gap-2">
+            <Label>Private notes</Label>
+            <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Internal follow-up notes (only you can see these)"
+              className="rounded-xl min-h-[120px]" data-testid={`followup-notes-${row.id}`} />
+          </div>
+        </div>
+        <DialogFooter className="gap-2">
+          <DialogClose asChild><Button variant="outline" className="rounded-xl">Cancel</Button></DialogClose>
+          <Button onClick={save} className="rounded-xl bg-ysa-blue hover:bg-ysa-navy" data-testid={`followup-save-${row.id}`}>Save Follow-up</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -41,8 +94,14 @@ export default function AdminDashboard() {
 
   const changeStatus = async (id, s) => {
     setRows((r) => r.map((x) => (x.id === id ? { ...x, status: s } : x)));
-    try { await adminUpdate(id, s); toast.success("Status updated"); }
+    try { await adminUpdate(id, { status: s }); toast.success("Status updated"); }
     catch { toast.error("Update failed"); load(); }
+  };
+
+  const saveNotes = async (id, notes, callback_date) => {
+    setRows((r) => r.map((x) => (x.id === id ? { ...x, notes, callback_date } : x)));
+    try { await adminUpdate(id, { notes, callback_date }); toast.success("Follow-up saved"); }
+    catch { toast.error("Could not save follow-up"); load(); }
   };
 
   const remove = async (id) => {
@@ -162,6 +221,7 @@ export default function AdminDashboard() {
                     <th className="px-5 py-3 font-semibold hidden lg:table-cell">Message</th>
                     <th className="px-5 py-3 font-semibold">Status</th>
                     <th className="px-5 py-3 font-semibold">Received</th>
+                    <th className="px-5 py-3 font-semibold">Follow-up</th>
                     <th className="px-5 py-3"></th>
                   </tr>
                 </thead>
@@ -192,6 +252,9 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-5 py-3.5 text-ysa-navy/50 text-xs whitespace-nowrap">
                         {new Date(r.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <FollowUpButton row={r} onSave={saveNotes} />
                       </td>
                       <td className="px-5 py-3.5">
                         <AlertDialog>

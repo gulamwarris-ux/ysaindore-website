@@ -14,6 +14,6 @@ export const authMe = () => api.get("/auth/me").then((r) => r.data);
 export const authLogout = () => api.post("/auth/logout").then((r) => r.data);
 
 export const adminList = () => api.get("/admin/enquiries").then((r) => r.data);
-export const adminUpdate = (id, status) => api.patch(`/admin/enquiries/${id}`, { status }).then((r) => r.data);
+export const adminUpdate = (id, data) => api.patch(`/admin/enquiries/${id}`, data).then((r) => r.data);
 export const adminDelete = (id) => api.delete(`/admin/enquiries/${id}`).then((r) => r.data);
 export const adminExport = () => api.get("/admin/enquiries/export", { responseType: "blob" }).then((r) => r.data);
