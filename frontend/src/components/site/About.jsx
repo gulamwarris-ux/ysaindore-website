@@ -19,6 +19,9 @@ export const About = () => (
         <h2 className="mt-3 text-3xl md:text-5xl font-extrabold text-ysa-navy tracking-tight leading-[1.1]">
           A different kind of academy — one that grows thinkers.
         </h2>
+        <p className="mt-6 text-xl md:text-2xl font-semibold text-ysa-blue leading-snug">
+          Where students don't just study science—<span className="text-ysa-green">they experience it.</span>
+        </p>
       </Reveal>
 
       <div className="grid lg:grid-cols-3 gap-6 mb-16">

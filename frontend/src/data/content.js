@@ -59,13 +59,13 @@ export const WHY = [
 export const JOURNEY = ["Observe", "Think", "Experiment", "Understand", "Apply", "Excel"];
 
 export const GALLERY = [
-  { src: "https://images.pexels.com/photos/8471859/pexels-photo-8471859.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", alt: "Students conducting a chemistry experiment", tag: "Science Projects" },
-  { src: "https://images.unsplash.com/photo-1585980243496-fe29a36bd382?crop=entropy&cs=srgb&fm=jpg&q=85&w=940", alt: "Children building a robotics project", tag: "STEM Programs" },
+  { src: "https://images.unsplash.com/photo-1742206594477-15139139c0df?crop=entropy&cs=srgb&fm=jpg&q=85&w=940", alt: "Student using a microscope to examine a specimen", tag: "Microscopes" },
+  { src: "https://images.unsplash.com/photo-1585980243496-fe29a36bd382?crop=entropy&cs=srgb&fm=jpg&q=85&w=940", alt: "Children building and programming a robotics project", tag: "Robotics" },
+  { src: "https://images.pexels.com/photos/8471859/pexels-photo-8471859.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", alt: "Students conducting a hands-on chemistry experiment", tag: "Chemistry" },
+  { src: "https://images.unsplash.com/photo-1603354351149-e97b9124020d?crop=entropy&cs=srgb&fm=jpg&q=85&w=940", alt: "Child assembling a STEM model with building blocks", tag: "STEM Models" },
+  { src: "https://images.pexels.com/photos/8471975/pexels-photo-8471975.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", alt: "Two students discussing a biology experiment together", tag: "Scientific Discussion" },
+  { src: "https://images.unsplash.com/photo-1560789509-71b2b9ad0af7?crop=entropy&cs=srgb&fm=jpg&q=85&w=940", alt: "Curious students exploring exhibits at a science fair", tag: "Curiosity in Action" },
   { src: "https://images.unsplash.com/photo-1764408721535-2dcb912db83e?crop=entropy&cs=srgb&fm=jpg&q=85&w=940", alt: "Student trophies and competition awards", tag: "Competitions" },
-  { src: "https://images.pexels.com/photos/8471975/pexels-photo-8471975.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940", alt: "Two students exploring biology", tag: "Science Projects" },
-  { src: "https://images.unsplash.com/photo-1742206594477-15139139c0df?crop=entropy&cs=srgb&fm=jpg&q=85&w=940", alt: "Young scientist examining a microscope slide", tag: "Olympiads" },
-  { src: "https://images.unsplash.com/photo-1560789509-71b2b9ad0af7?crop=entropy&cs=srgb&fm=jpg&q=85&w=940", alt: "Students at a science exhibition", tag: "Competitions" },
-  { src: "https://images.unsplash.com/photo-1603354351149-e97b9124020d?crop=entropy&cs=srgb&fm=jpg&q=85&w=940", alt: "Child building with STEM blocks", tag: "STEM Programs" },
   { src: "https://images.unsplash.com/photo-1638636241638-aef5120c5153?crop=entropy&cs=srgb&fm=jpg&q=85&w=940", alt: "Achievement certificate with gold seal", tag: "Certificates" },
 ];
 

@@ -6,11 +6,11 @@ export const Gallery = () => (
   <section id="gallery" className="py-24 md:py-32 bg-white" data-testid="gallery-section">
     <div className="max-w-7xl mx-auto px-5 md:px-8">
       <Reveal className="max-w-2xl mb-14">
-        <span className="text-xs font-bold tracking-[0.22em] text-ysa-green uppercase">Student Achievements</span>
+        <span className="text-xs font-bold tracking-[0.22em] text-ysa-green uppercase">Science in Action</span>
         <h2 className="mt-3 text-3xl md:text-5xl font-extrabold text-ysa-navy tracking-tight">
-          Proof that curiosity pays off.
+          Not a photo of a classroom. A window into discovery.
         </h2>
-        <p className="mt-4 text-ysa-navy/60 text-lg">Olympiads, science projects, competitions and certificates from our young scientists.</p>
+        <p className="mt-4 text-ysa-navy/60 text-lg">Microscopes, robotics, chemistry, STEM models and real scientific discussion — this is what learning looks like here.</p>
       </Reveal>
 
       <div className="columns-2 md:columns-3 lg:columns-4 gap-4 [column-fill:_balance]">

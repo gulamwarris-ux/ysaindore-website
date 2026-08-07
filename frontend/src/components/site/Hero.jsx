@@ -54,12 +54,21 @@ export const Hero = () => {
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-            className="mt-6 text-base md:text-lg text-ysa-navy/70 max-w-xl font-medium"
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42 }}
+            className="mt-6 text-lg md:text-xl font-semibold text-ysa-navy max-w-xl"
+            data-testid="hero-identity"
           >
-            Small Batches <span className="text-ysa-yellow font-bold">•</span> Individual Attention{" "}
-            <span className="text-ysa-yellow font-bold">•</span> Concept Mastery{" "}
-            <span className="text-ysa-yellow font-bold">•</span> Expert Mentoring
+            Where students don't just study science—<span className="text-ysa-green">they experience it.</span>
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.52 }}
+            className="mt-4 text-base md:text-lg text-ysa-navy/70 max-w-xl font-medium"
+          >
+            Microscopes <span className="text-ysa-yellow font-bold">•</span> Robotics{" "}
+            <span className="text-ysa-yellow font-bold">•</span> Chemistry{" "}
+            <span className="text-ysa-yellow font-bold">•</span> STEM Models{" "}
+            <span className="text-ysa-yellow font-bold">•</span> Curiosity in Action
           </motion.p>
 
           <motion.div
