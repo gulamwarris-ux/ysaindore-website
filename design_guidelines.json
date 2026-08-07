@@ -1,0 +1,124 @@
+{
+  "theme": "light",
+  "typography": {
+    "font_family": {
+      "heading": "Poppins, sans-serif",
+      "body": "Poppins, sans-serif"
+    },
+    "scale": {
+      "h1": "text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]",
+      "h2": "text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight",
+      "h3": "text-xl md:text-2xl font-bold tracking-tight",
+      "body_large": "text-lg md:text-xl font-normal leading-relaxed",
+      "body": "text-base font-normal leading-relaxed",
+      "small": "text-sm font-medium tracking-wide uppercase"
+    },
+    "rules": [
+      "Use Poppins Bold for all headings.",
+      "Use Poppins Regular for body copy.",
+      "Headlines (h1, h2) MUST use tight letter spacing (tracking-tight) to feel premium.",
+      "Overlines/Subtitles should be uppercase, small, and widely spaced (tracking-widest)."
+    ]
+  },
+  "colors": {
+    "primary": "#0F3D8C",
+    "primary_foreground": "#FFFFFF",
+    "secondary": "#F5B400",
+    "secondary_foreground": "#0A1930",
+    "accent": "#2E8B57",
+    "accent_foreground": "#FFFFFF",
+    "background": "#F0F4FA",
+    "surface": "#FFFFFF",
+    "surface_dark": "#0A1930",
+    "text_main": "#0A1930",
+    "text_muted": "#475569",
+    "border": "#E2E8F0"
+  },
+  "visual_enhancers": {
+    "corner_radius": "rounded-2xl (16px) for major cards and images, rounded-xl (12px) for buttons and inputs.",
+    "shadows": [
+      "shadow-sm: 0 1px 2px 0 rgba(15, 61, 140, 0.05)",
+      "shadow-md: 0 4px 6px -1px rgba(15, 61, 140, 0.1), 0 2px 4px -1px rgba(15, 61, 140, 0.06)",
+      "shadow-xl: 0 20px 25px -5px rgba(15, 61, 140, 0.1), 0 10px 10px -5px rgba(15, 61, 140, 0.04)"
+    ],
+    "glassmorphism": "Use backdrop-blur-xl bg-white/80 for the sticky header and floating navigation elements.",
+    "icons": "Simple outline icons using lucide-react with 1.5px stroke width."
+  },
+  "layouts": {
+    "container": "max-w-7xl mx-auto px-6 md:px-12 lg:px-24",
+    "spacing_scale": "Use generous padding: py-24 or py-32 for sections, gap-8 or gap-12 for grids.",
+    "hero": "Split layout or massive central typography with an asymmetrical image composition. High use of negative space.",
+    "bento_grid": "For 'Why Parents Choose Us' and 'Courses'. Mix col-span-1 and col-span-2 cards in a grid-cols-1 md:grid-cols-2 lg:grid-cols-3 setup."
+  },
+  "motion": {
+    "libraries": [
+      "framer-motion",
+      "lenis (or @studio-freight/lenis)",
+      "react-fast-marquee"
+    ],
+    "patterns": [
+      "Smooth Momentum Scrolling: Initialize Lenis at the root layout.",
+      "Kinetic Hero Reveal: Masked line-by-line text reveal on load. Wrap each text line in a span with overflow-hidden, and animate a child motion.span from y: 100% to y: 0.",
+      "Scroll Reveals: Sections should fade up and in (y: 40, opacity: 0 to y: 0, opacity: 1) using Framer Motion's whileInView.",
+      "Subtle Parallax: The hero image should have a slow vertical parallax effect mapped to scroll position.",
+      "Hover States: Buttons should scale slightly (scale: 1.02) and lift (-translate-y-1) with a soft shadow increase."
+    ]
+  },
+  "component_instructions": {
+    "Header": "Sticky, glassmorphism background (bg-white/80 backdrop-blur-md). Logo left, Nav center, 'Book Free Demo' button right.",
+    "Hero": "Bold typographic statement. 'Building Curious Minds...' as H1. Include a clipped/rounded real photography image of students in lab. CTA buttons.",
+    "Trust_Bar": "Deep Royal Blue background (#0F3D8C), white text. Grid of stats/icons (15+ Years, Small Batch Size, etc.).",
+    "Marquee": "Editorial ribbon using react-fast-marquee. Text: 'Observe • Think • Experiment • Understand • Apply • Excel'. White background, Royal Blue text, or vice versa.",
+    "Courses_Grid": "Bento box style cards with solid white background, subtle border, and soft shadow on hover.",
+    "Board_Assessment": "Signature section. Massive Golden Yellow (#F5B400) background. High contrast dark navy text. Prominent CTA.",
+    "Achievements_Gallery": "Horizontal scrolling or masonry layout of student photos and certificates.",
+    "Floating_Actions": "Fixed position bottom-right for WhatsApp and bottom-left for Call Now. Z-index 50."
+  },
+  "image_urls": [
+    {
+      "category": "Hero / Science Lab",
+      "url": "https://images.pexels.com/photos/8471859/pexels-photo-8471859.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Curious children conducting science experiments with flasks and a microscope."
+    },
+    {
+      "category": "Secondary / Lab Group",
+      "url": "https://images.unsplash.com/photo-1707944746058-4da338d0f827?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODF8MHwxfHNlYXJjaHwxfHxzdHVkZW50cyUyMGluJTIwc2NpZW5jZSUyMGxhYnxlbnwwfHx8fDE3ODYwNzQwMjF8MA&ixlib=rb-4.1.0&q=85",
+      "description": "A group of people in lab coats working in a lab."
+    },
+    {
+      "category": "Chemistry / Biology",
+      "url": "https://images.pexels.com/photos/8471975/pexels-photo-8471975.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Two young girls exploring chemistry and biology."
+    },
+    {
+      "category": "Little Girl Scientist",
+      "url": "https://images.unsplash.com/photo-1633828763399-e29f1cd3f4c1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDZ8MHwxfHNlYXJjaHwxfHxzY2llbmNlJTIwZXhwZXJpbWVudCUyMGtpZHN8ZW58MHx8fHwxNzg2MDc0MDIxfDA&ixlib=rb-4.1.0&q=85",
+      "description": "Little girl wearing a white lab coat and goggles."
+    },
+    {
+      "category": "Classroom / Learning",
+      "url": "https://images.unsplash.com/photo-1761208662734-fb46f1398551?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDZ8MHwxfHNlYXJjaHwyfHxoYXBweSUyMGNoaWxkcmVuJTIwbGVhcm5pbmclMjBjbGFzc3Jvb218ZW58MHx8fHwxNzg2MDc0MDIxfDA&ixlib=rb-4.1.0&q=85",
+      "description": "Teacher instructing children at tables in a classroom."
+    },
+    {
+      "category": "Achievements / Certificate",
+      "url": "https://images.unsplash.com/photo-1638636241638-aef5120c5153?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDZ8MHwxfHNlYXJjaHwxfHxlZHVjYXRpb24lMjBhd2FyZCUyMGNlcnRpZmljYXRlfGVufDB8fHx8MTc4NjA3NDAyMXww&ixlib=rb-4.1.0&q=85",
+      "description": "Framed diploma with a gold seal."
+    }
+  ],
+  "accessibility": {
+    "contrast": "Ensure all text on Royal Blue and Golden Yellow backgrounds meets WCAG AA standards (minimum 4.5:1).",
+    "focus": "Custom focus rings (focus:ring-2 focus:ring-primary focus:ring-offset-2) for all interactive elements.",
+    "aria": "Include aria-labels for icon-only buttons (like the floating WhatsApp/Call buttons)."
+  },
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic outputs. Avoid 'AI slop'. Create an Awwwards-level, premium frontend.",
+    "Use generous padding (2x-3x normal). Cramped designs look cheap.",
+    "DO NOT use generic centered layouts or simplistic gradients.",
+    "NEVER use complete transparent backgrounds in headers or overlays that scroll over content.",
+    "All interactive and key informational elements MUST include a 'data-testid' attribute.",
+    "Implement micro-animations for all hover states.",
+    "Avoid the default 'Vercel' look; heavily customize Shadcn components to fit the brand.",
+    "Install required packages: framer-motion, lenis, lucide-react, react-fast-marquee, @radix-ui/react-icons."
+  ]
+}
