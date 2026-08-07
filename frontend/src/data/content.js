@@ -89,11 +89,11 @@ export const FOUNDER = {
   name: "Dr. Arifa Sheikh",
   role: "Founder & Professor · Chief Mentor",
   monogram: "AS",
-  bio: "Young Scientist Academy is led by Dr. Arifa Sheikh — a Ph.D. in Nanoscience and Assistant Professor with over a decade of teaching and research experience. A Young Scientist Award winner (1st in M.P.), she blends rigorous science with warm, student-centric mentoring.",
+  bio: "Young Scientist Academy is led by Dr. Arifa Sheikh — a Ph.D. in Nanoscience and Professor with over 15 years of teaching and research experience. A Young Scientist Award winner (1st in M.P.), she blends rigorous science with warm, student-centric mentoring.",
   credentials: [
     "Ph.D. in Nanoscience",
     "Young Scientist Award — 1st in Madhya Pradesh",
-    "10+ Years Teaching & Research",
+    "15+ Years Teaching & Research",
     "M.Sc. Chemistry — College Topper",
   ],
   quote: "Success demands profound concentration and relentless effort until fruitful results are achieved.",
