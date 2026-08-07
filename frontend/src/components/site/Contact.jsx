@@ -44,7 +44,7 @@ export const Contact = () => {
             </a>
             <div className="flex items-center gap-4 p-4 rounded-2xl bg-ysa-mist">
               <span className="h-11 w-11 rounded-xl bg-white flex items-center justify-center"><MapPin className="h-5 w-5 text-ysa-blue" /></span>
-              <div><div className="text-xs opacity-60">Location</div><div className="font-bold text-ysa-navy">Indore, Madhya Pradesh</div></div>
+              <div><div className="text-xs opacity-60">Location</div><div className="font-bold text-ysa-navy">27 Pakiza Greens, Indore 452016</div></div>
             </div>
           </div>
 

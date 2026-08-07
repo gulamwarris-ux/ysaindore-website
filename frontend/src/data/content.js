@@ -3,10 +3,10 @@ export const CONTACT = {
   phoneIntl: "+919926000920",
   whatsapp: "919926000920",
   email: "info@ysaindore.com",
-  addressLines: ["Young Scientist Academy", "Indore, Madhya Pradesh, India"],
+  addressLines: ["27 Pakiza Greens", "Indore 452016, Madhya Pradesh", "India"],
   mapEmbed:
-    "https://www.google.com/maps?q=Indore%2C%20Madhya%20Pradesh&output=embed",
-  mapLink: "https://www.google.com/maps/search/?api=1&query=Indore+Madhya+Pradesh",
+    "https://www.google.com/maps?q=27%20Pakiza%20Greens%2C%20Indore%2C%20452016%2C%20Madhya%20Pradesh&output=embed",
+  mapLink: "https://www.google.com/maps/search/?api=1&query=27+Pakiza+Greens+Indore+452016+Madhya+Pradesh",
   socials: [
     { label: "Instagram", href: "https://instagram.com", icon: "Instagram" },
     { label: "Facebook", href: "https://facebook.com", icon: "Facebook" },

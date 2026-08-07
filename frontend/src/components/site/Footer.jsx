@@ -69,7 +69,7 @@ export const Footer = () => {
               <li><a href={`tel:${CONTACT.phoneIntl}`} className="flex items-center gap-2 hover:text-white"><Phone className="h-4 w-4 text-ysa-yellow" /> {CONTACT.phone}</a></li>
               <li><a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-white"><MessageCircle className="h-4 w-4 text-ysa-yellow" /> WhatsApp Chat</a></li>
               <li><a href={`mailto:${CONTACT.email}`} className="flex items-center gap-2 hover:text-white"><Mail className="h-4 w-4 text-ysa-yellow" /> {CONTACT.email}</a></li>
-              <li className="flex items-center gap-2"><MapPin className="h-4 w-4 text-ysa-yellow" /> Indore, Madhya Pradesh</li>
+              <li className="flex items-start gap-2"><MapPin className="h-4 w-4 text-ysa-yellow mt-0.5 shrink-0" /> 27 Pakiza Greens, Indore 452016, Madhya Pradesh</li>
             </ul>
           </div>
         </div>
