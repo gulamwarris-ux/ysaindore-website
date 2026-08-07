@@ -7,7 +7,7 @@ import { Textarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, DialogClose } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose } from "../components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -24,6 +24,14 @@ const KIND_STYLE = {
 const STATUS_STYLE = {
   new: "bg-red-100 text-red-600", contacted: "bg-amber-100 text-amber-700", resolved: "bg-emerald-100 text-emerald-700",
 };
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// Format a raw 'YYYY-MM-DD' string as local date without UTC parsing shift.
+function fmtDate(ymd) {
+  if (!ymd) return "";
+  const [y, m, d] = ymd.split("-");
+  return `${parseInt(d, 10).toString().padStart(2, "0")} ${MONTHS[parseInt(m, 10) - 1]}`;
+}
 
 function FollowUpButton({ row, onSave }) {
   const [open, setOpen] = useState(false);
@@ -46,13 +54,14 @@ function FollowUpButton({ row, onSave }) {
         >
           <StickyNote className="h-3.5 w-3.5" />
           {row.callback_date
-            ? new Date(row.callback_date).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })
+            ? fmtDate(row.callback_date)
             : hasFollowUp ? "Note" : "Add"}
         </button>
       </DialogTrigger>
       <DialogContent className="rounded-2xl sm:max-w-[440px]">
         <DialogHeader>
           <DialogTitle className="text-ysa-navy">Follow-up · {row.name}</DialogTitle>
+          <DialogDescription>Set a callback date and private notes. Only admins can see these.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 pt-1">
           <div className="grid gap-2">
