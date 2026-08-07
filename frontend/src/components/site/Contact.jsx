@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Phone, MessageCircle, MapPin, Mail, Loader2, Send } from "lucide-react";
+import { Phone, MessageCircle, MapPin, Mail, Loader2, Send, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -45,6 +45,14 @@ export const Contact = () => {
             <div className="flex items-center gap-4 p-4 rounded-2xl bg-ysa-mist">
               <span className="h-11 w-11 rounded-xl bg-white flex items-center justify-center"><MapPin className="h-5 w-5 text-ysa-blue" /></span>
               <div><div className="text-xs opacity-60">Location</div><div className="font-bold text-ysa-navy">27 Pakiza Greens, Indore 452016</div></div>
+            </div>
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-ysa-mist" data-testid="contact-hours">
+              <span className="h-11 w-11 rounded-xl bg-white flex items-center justify-center"><Clock className="h-5 w-5 text-ysa-green" /></span>
+              <div>
+                <div className="text-xs opacity-60">Timings</div>
+                <div className="font-bold text-ysa-navy">{CONTACT.hours.days} · {CONTACT.hours.time}</div>
+                <div className="text-xs text-ysa-navy/50">{CONTACT.hours.closed}</div>
+              </div>
             </div>
           </div>
 

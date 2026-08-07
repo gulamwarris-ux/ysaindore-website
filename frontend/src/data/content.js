@@ -7,6 +7,11 @@ export const CONTACT = {
   mapEmbed:
     "https://www.google.com/maps?q=27%20Pakiza%20Greens%2C%20Indore%2C%20452016%2C%20Madhya%20Pradesh&output=embed",
   mapLink: "https://www.google.com/maps/search/?api=1&query=27+Pakiza+Greens+Indore+452016+Madhya+Pradesh",
+  hours: {
+    days: "Monday – Saturday",
+    time: "3:30 PM – 8:30 PM",
+    closed: "Closed on Sundays & Public Holidays",
+  },
   socials: [
     { label: "Instagram", href: "https://instagram.com", icon: "Instagram" },
     { label: "Facebook", href: "https://facebook.com", icon: "Facebook" },
