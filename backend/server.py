@@ -149,7 +149,8 @@ async def create_enquiry(payload: EnquiryCreate, request: Request):
     # Honeypot: bots fill hidden field. Pretend success, store nothing.
     if payload.company:
         return Enquiry(**payload.model_dump(exclude={"company"}))
-    ip = request.client.host if request.client else "unknown"
+    ip = request.headers.get("x-forwarded-for", "").split(",")[0].strip() \
+        or (request.client.host if request.client else "unknown")
     if not rate_ok(ip):
         raise HTTPException(status_code=429, detail="Too many requests. Please try again shortly.")
     enq = Enquiry(**payload.model_dump(exclude={"company"}))
