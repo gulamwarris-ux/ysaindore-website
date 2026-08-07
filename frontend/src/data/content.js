@@ -82,7 +82,7 @@ export const BOARDS = ["CBSE", "ICSE", "IB", "State Board"];
 
 export const FOUNDER = {
   name: "Dr. Arifa Sheikh",
-  role: "Founder & Chief Mentor",
+  role: "Founder & Professor · Chief Mentor",
   monogram: "AS",
   bio: "Young Scientist Academy is led by Dr. Arifa Sheikh — a Ph.D. in Nanoscience and Assistant Professor with over a decade of teaching and research experience. A Young Scientist Award winner (1st in M.P.), she blends rigorous science with warm, student-centric mentoring.",
   credentials: [
