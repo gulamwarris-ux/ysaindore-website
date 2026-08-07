@@ -1,16 +1,21 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends
+from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+import io
+import csv
+import time
 import logging
 import asyncio
+from collections import defaultdict
 from pathlib import Path
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
 from typing import List, Optional, Literal
 import uuid
 import httpx
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 
 ROOT_DIR = Path(__file__).parent
@@ -25,6 +30,25 @@ EMAIL_BASE_URL = "https://integrations.emergentagent.com"
 EMAIL_KEY = os.environ["EMERGENT_EMAIL_KEY"]
 EMAIL_FROM_NAME = os.environ["EMAIL_FROM_NAME"]
 OWNER_EMAIL = os.environ.get("OWNER_EMAIL", "info@ysaindore.com")
+ADMIN_EMAILS = {e.strip().lower() for e in os.environ.get("ADMIN_EMAILS", "").split(",") if e.strip()}
+
+AUTH_SESSION_URL = "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data"
+SESSION_DAYS = 7
+
+# Lightweight in-memory rate limiter for public enquiry form
+_rl = defaultdict(list)
+RL_MAX = 8
+RL_WINDOW = 600  # seconds
+
+def rate_ok(ip: str) -> bool:
+    now = time.time()
+    q = _rl[ip]
+    while q and q[0] < now - RL_WINDOW:
+        q.pop(0)
+    if len(q) >= RL_MAX:
+        return False
+    q.append(now)
+    return True
 
 app = FastAPI(title="Young Scientist Academy API")
 api_router = APIRouter(prefix="/api")
@@ -43,6 +67,7 @@ class Enquiry(BaseModel):
     grade: Optional[str] = None
     kind: Literal["demo", "contact", "assessment", "admission"] = "contact"
     message: Optional[str] = None
+    status: Literal["new", "contacted", "resolved"] = "new"
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
@@ -53,6 +78,15 @@ class EnquiryCreate(BaseModel):
     grade: Optional[str] = None
     kind: Literal["demo", "contact", "assessment", "admission"] = "contact"
     message: Optional[str] = None
+    company: Optional[str] = None  # honeypot — must stay empty
+
+
+class StatusUpdate(BaseModel):
+    status: Literal["new", "contacted", "resolved"]
+
+
+class SessionExchange(BaseModel):
+    session_id: str
 
 
 class BlogPost(BaseModel):
@@ -111,17 +145,143 @@ async def root():
 
 
 @api_router.post("/enquiries", response_model=Enquiry)
-async def create_enquiry(payload: EnquiryCreate):
-    enq = Enquiry(**payload.model_dump())
+async def create_enquiry(payload: EnquiryCreate, request: Request):
+    # Honeypot: bots fill hidden field. Pretend success, store nothing.
+    if payload.company:
+        return Enquiry(**payload.model_dump(exclude={"company"}))
+    ip = request.client.host if request.client else "unknown"
+    if not rate_ok(ip):
+        raise HTTPException(status_code=429, detail="Too many requests. Please try again shortly.")
+    enq = Enquiry(**payload.model_dump(exclude={"company"}))
     await db.enquiries.insert_one(enq.model_dump())
     asyncio.create_task(send_owner_email(enq))
     return enq
 
 
-@api_router.get("/enquiries", response_model=List[Enquiry])
-async def list_enquiries():
-    docs = await db.enquiries.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+# ---------- Auth ----------
+async def _session_token(request: Request) -> Optional[str]:
+    token = request.cookies.get("session_token")
+    if not token:
+        auth = request.headers.get("Authorization", "")
+        if auth.startswith("Bearer "):
+            token = auth.split(" ", 1)[1]
+    return token
+
+
+async def get_current_user(request: Request):
+    token = await _session_token(request)
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    sess = await db.user_sessions.find_one({"session_token": token}, {"_id": 0})
+    if not sess:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    expires_at = sess["expires_at"]
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=401, detail="Session expired")
+    user = await db.users.find_one({"user_id": sess["user_id"]}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user
+
+
+async def get_current_admin(user=Depends(get_current_user)):
+    if user["email"].lower() not in ADMIN_EMAILS:
+        raise HTTPException(status_code=403, detail="Not authorised for admin access")
+    return user
+
+
+@api_router.post("/auth/session")
+async def auth_session(body: SessionExchange, response: Response):
+    try:
+        async with httpx.AsyncClient(timeout=30) as c:
+            resp = await c.get(AUTH_SESSION_URL, headers={"X-Session-ID": body.session_id})
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception as e:
+        logger.error(f"Auth session exchange failed: {e}")
+        raise HTTPException(status_code=401, detail="Authentication failed")
+
+    email = data["email"]
+    existing = await db.users.find_one({"email": email}, {"_id": 0})
+    if existing:
+        user_id = existing["user_id"]
+        await db.users.update_one({"user_id": user_id},
+                                  {"$set": {"name": data.get("name"), "picture": data.get("picture")}})
+    else:
+        user_id = f"user_{uuid.uuid4().hex[:12]}"
+        await db.users.insert_one({
+            "user_id": user_id, "email": email, "name": data.get("name"),
+            "picture": data.get("picture"), "created_at": datetime.now(timezone.utc).isoformat(),
+        })
+
+    session_token = data["session_token"]
+    expires_at = datetime.now(timezone.utc) + timedelta(days=SESSION_DAYS)
+    await db.user_sessions.insert_one({
+        "user_id": user_id, "session_token": session_token,
+        "expires_at": expires_at.isoformat(), "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    response.set_cookie("session_token", session_token, httponly=True, secure=True,
+                        samesite="none", path="/", max_age=SESSION_DAYS * 24 * 3600)
+    return {"user_id": user_id, "email": email, "name": data.get("name"),
+            "picture": data.get("picture"), "is_admin": email.lower() in ADMIN_EMAILS}
+
+
+@api_router.get("/auth/me")
+async def auth_me(user=Depends(get_current_user)):
+    return {"user_id": user["user_id"], "email": user["email"], "name": user.get("name"),
+            "picture": user.get("picture"), "is_admin": user["email"].lower() in ADMIN_EMAILS}
+
+
+@api_router.post("/auth/logout")
+async def auth_logout(request: Request, response: Response):
+    token = await _session_token(request)
+    if token:
+        await db.user_sessions.delete_one({"session_token": token})
+    response.delete_cookie("session_token", path="/", samesite="none", secure=True)
+    return {"status": "logged_out"}
+
+
+# ---------- Admin ----------
+@api_router.get("/admin/enquiries", response_model=List[Enquiry])
+async def admin_list_enquiries(admin=Depends(get_current_admin)):
+    docs = await db.enquiries.find({}, {"_id": 0}).sort("created_at", -1).to_list(2000)
     return docs
+
+
+@api_router.patch("/admin/enquiries/{enquiry_id}", response_model=Enquiry)
+async def admin_update_enquiry(enquiry_id: str, body: StatusUpdate, admin=Depends(get_current_admin)):
+    res = await db.enquiries.find_one_and_update(
+        {"id": enquiry_id}, {"$set": {"status": body.status}},
+        projection={"_id": 0}, return_document=True)
+    if not res:
+        raise HTTPException(status_code=404, detail="Enquiry not found")
+    return res
+
+
+@api_router.delete("/admin/enquiries/{enquiry_id}")
+async def admin_delete_enquiry(enquiry_id: str, admin=Depends(get_current_admin)):
+    res = await db.enquiries.delete_one({"id": enquiry_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Enquiry not found")
+    return {"status": "deleted"}
+
+
+@api_router.get("/admin/enquiries/export")
+async def admin_export_enquiries(admin=Depends(get_current_admin)):
+    docs = await db.enquiries.find({}, {"_id": 0}).sort("created_at", -1).to_list(5000)
+    buf = io.StringIO()
+    writer = csv.writer(buf)
+    writer.writerow(["Name", "Phone", "Email", "Grade", "Type", "Status", "Message", "Received"])
+    for d in docs:
+        writer.writerow([d.get("name"), d.get("phone"), d.get("email", ""), d.get("grade", ""),
+                         d.get("kind"), d.get("status", "new"), d.get("message", ""), d.get("created_at")])
+    buf.seek(0)
+    return StreamingResponse(iter([buf.getvalue()]), media_type="text/csv",
+                             headers={"Content-Disposition": "attachment; filename=enquiries.csv"})
 
 
 @api_router.get("/blog", response_model=List[BlogPost])
